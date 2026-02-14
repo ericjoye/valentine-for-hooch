@@ -29,27 +29,42 @@ const errorMessages = [
     "Last one! Unlock me! 💝"
 ];
 
-// Create floating hearts background
+// River of hearts - seamless bottom to top flow
 function createHearts() {
     const heartEmojis = ['❤️', '💕', '💖', '💗', '💓', '💘'];
+    const maxHearts = 30;
     
-    for (let i = 0; i < 25; i++) {
+    function spawnHeart() {
         const heart = document.createElement('div');
         heart.className = 'floating-heart';
         heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
         
+        // Random properties
         const left = Math.random() * 100;
-        const delay = Math.random() * 15;
-        const duration = 10 + Math.random() * 10;
-        const size = 16 + Math.random() * 20;
+        const duration = 12 + Math.random() * 8; // 12-20s
+        const size = 14 + Math.random() * 18; // 14-32px
+        const drift = (Math.random() - 0.5) * 100; // -50 to 50px horizontal drift
         
         heart.style.left = left + '%';
-        heart.style.animationDelay = delay + 's';
-        heart.style.animationDuration = duration + 's';
         heart.style.fontSize = size + 'px';
+        heart.style.setProperty('--drift', drift + 'px');
+        heart.style.animationDuration = duration + 's';
         
         heartsBg.appendChild(heart);
+        
+        // Remove after animation completes
+        setTimeout(() => {
+            heart.remove();
+        }, duration * 1000);
     }
+    
+    // Initial batch
+    for (let i = 0; i < maxHearts; i++) {
+        setTimeout(spawnHeart, i * 400); // Stagger entrance
+    }
+    
+    // Continuous spawning
+    setInterval(spawnHeart, 600);
 }
 
 function showError() {

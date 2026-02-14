@@ -15,7 +15,7 @@ body {
     position: relative;
 }
 
-/* Floating Hearts Background */
+/* Floating Hearts River - Bottom to Top */
 .hearts-bg {
     position: fixed;
     top: 0;
@@ -29,25 +29,25 @@ body {
 
 .floating-heart {
     position: absolute;
-    font-size: 20px;
-    opacity: 0.06;
-    animation: float 15s infinite ease-in-out;
+    opacity: 0.08;
+    animation: river-flow linear infinite;
     color: #ff6b9d;
+    will-change: transform;
 }
 
-@keyframes float {
-    0%, 100% { 
-        transform: translateY(100vh) rotate(0deg); 
+@keyframes river-flow {
+    0% {
+        transform: translateY(110vh) translateX(0) rotate(0deg);
         opacity: 0;
     }
-    10% {
-        opacity: 0.06;
+    5% {
+        opacity: 0.08;
     }
-    90% {
-        opacity: 0.06;
+    95% {
+        opacity: 0.08;
     }
-    100% { 
-        transform: translateY(-10vh) rotate(360deg); 
+    100% {
+        transform: translateY(-20vh) translateX(var(--drift)) rotate(360deg);
         opacity: 0;
     }
 }
