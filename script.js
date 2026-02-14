@@ -29,49 +29,79 @@ const errorMessages = [
     "Last one! Unlock me! 💝"
 ];
 
-// River of hearts - seamless bottom to top flow
+// Track occupied lanes to prevent overlap
+const lanes = new Set();
+const laneWidth = 12; // percentage
+const totalLanes = Math.floor(100 / laneWidth);
+
+function getRandomLane() {
+    // Find available lanes
+    const available = [];
+    for (let i = 0; i < totalLanes; i++) {
+        if (!lanes.has(i)) {
+            available.push(i);
+        }
+    }
+    
+    // If all lanes occupied, pick random and allow slight overlap
+    if (available.length === 0) {
+        return Math.floor(Math.random() * totalLanes);
+    }
+    
+    // Pick random available lane
+    const lane = available[Math.floor(Math.random() * available.length)];
+    lanes.add(lane);
+    
+    // Remove from occupied after animation starts
+    setTimeout(() => lanes.delete(lane), 2000);
+    
+    return lane;
+}
+
+// River of hearts - no overlap
 function createHearts() {
     const heartEmojis = ['❤️', '💕', '💖', '💗', '💓', '💘'];
-    const maxHearts = 30;
     
     function spawnHeart() {
         const heart = document.createElement('div');
         heart.className = 'floating-heart';
         heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
         
-        // Random properties
-        const left = Math.random() * 100;
-        const duration = 12 + Math.random() * 8; // 12-20s
-        const size = 14 + Math.random() * 18; // 14-32px
-        const drift = (Math.random() - 0.5) * 100; // -50 to 50px horizontal drift
+        // Get non-overlapping lane
+        const lane = getRandomLane();
+        const left = lane * laneWidth;
+        const randomOffset = Math.random() * (laneWidth - 5);
+        const finalLeft = left + randomOffset;
         
-        heart.style.left = left + '%';
+        const duration = 15 + Math.random() * 10; // 15-25s
+        const size = 12 + Math.random() * 16; // 12-28px
+        const drift = (Math.random() - 0.5) * 60; // -30 to 30px
+        const delay = Math.random() * 2;
+        
+        heart.style.left = finalLeft + '%';
         heart.style.fontSize = size + 'px';
         heart.style.setProperty('--drift', drift + 'px');
         heart.style.animationDuration = duration + 's';
+        heart.style.animationDelay = delay + 's';
         
         heartsBg.appendChild(heart);
         
-        // Remove after animation completes
-        setTimeout(() => {
-            heart.remove();
-        }, duration * 1000);
+        setTimeout(() => heart.remove(), (duration + delay) * 1000);
     }
     
-    // Initial batch
-    for (let i = 0; i < maxHearts; i++) {
-        setTimeout(spawnHeart, i * 400); // Stagger entrance
-    }
+    // Spawning interval - slower to prevent crowding
+    setInterval(spawnHeart, 900);
     
-    // Continuous spawning
-    setInterval(spawnHeart, 600);
+    // Initial hearts
+    for (let i = 0; i < 12; i++) {
+        setTimeout(spawnHeart, i * 300);
+    }
 }
 
 function showError() {
     errorMsg.textContent = errorMessages[Math.min(clickCount, errorMessages.length - 1)];
     errorMsg.classList.add('show');
     
-    // Shake effect
     btnYes.style.transform = 'translateX(-5px)';
     setTimeout(() => {
         btnYes.style.transform = 'translateX(5px)';
@@ -93,7 +123,6 @@ function growYes() {
     clickCount++;
     showSubtitle();
     
-    // Grow Yes progressively
     const multiplier = 1 + (clickCount * 0.15);
     const clamped = Math.min(multiplier, 1.8);
     requestAnimationFrame(() => {
@@ -101,7 +130,6 @@ function growYes() {
         btnYes.style.fontSize = `${17 * clamped}px`;
     });
     
-    // UNLOCK YES at stage 6 (after 6 No clicks)
     if (clickCount >= 6) {
         yesReady = true;
         btnYes.classList.add('ready');
