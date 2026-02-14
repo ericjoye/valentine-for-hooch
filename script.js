@@ -20,16 +20,16 @@ const subtitles = [
 ];
 
 const errorMessages = [
-    "Not so fast! Click No first 💕",
-    "You gotta say no before you say yes! 🥺",
-    "I'm not gonna make this easy 😏",
-    "Keep trying the No button... 😉",
-    "Almost there, just a few more Nos! 💗",
-    "Almost... just a little more work! 🥰",
-    "Last one! I promise! 💝"
+    "Not yet! Keep clicking No! 💕",
+    "Nope! More Nos needed! 😉",
+    "Still locked! 🔒 Keep going!",
+    "Not until you earn it! 😏",
+    "So close! Just a couple more Nos! 🥺",
+    "One more No and you've got me! 💗",
+    "Last one! Unlock me! 💝"
 ];
 
-// Create floating hearts
+// Create floating hearts background
 function createHearts() {
     const heartEmojis = ['❤️', '💕', '💖', '💗', '💓', '💘'];
     
@@ -38,7 +38,6 @@ function createHearts() {
         heart.className = 'floating-heart';
         heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
         
-        // Random positioning
         const left = Math.random() * 100;
         const delay = Math.random() * 15;
         const duration = 10 + Math.random() * 10;
@@ -54,56 +53,43 @@ function createHearts() {
 }
 
 function showError() {
-    const msgIndex = Math.min(clickCount, errorMessages.length - 1);
-    errorMsg.textContent = errorMessages[msgIndex];
+    errorMsg.textContent = errorMessages[Math.min(clickCount, errorMessages.length - 1)];
     errorMsg.classList.add('show');
     
-    // Shake animation
+    // Shake effect
     btnYes.style.transform = 'translateX(-5px)';
     setTimeout(() => {
         btnYes.style.transform = 'translateX(5px)';
-        setTimeout(() => {
-            btnYes.style.transform = 'translateX(0)';
-        }, 100);
+        setTimeout(() => btnYes.style.transform = 'translateX(0)', 100);
     }, 100);
     
-    setTimeout(() => {
-        errorMsg.classList.remove('show');
-    }, 2000);
+    setTimeout(() => errorMsg.classList.remove('show'), 2000);
 }
 
 function showSubtitle() {
-    const msgIndex = clickCount - 1;
-    if (msgIndex < subtitles.length) {
-        subtitle.textContent = subtitles[msgIndex];
+    const currentSubtitle = subtitles[Math.min(clickCount - 1, subtitles.length - 1)];
+    if (currentSubtitle) {
+        subtitle.textContent = currentSubtitle;
         subtitle.classList.add('show');
     }
 }
 
 function growYes() {
     clickCount++;
-    
-    // Show subtitle
     showSubtitle();
     
-    // Enable Yes after first click
-    if (!yesReady) {
+    // Grow Yes progressively
+    const multiplier = 1 + (clickCount * 0.15);
+    const clamped = Math.min(multiplier, 1.8);
+    requestAnimationFrame(() => {
+        btnYes.style.padding = `${16 * clamped}px ${44 * clamped}px`;
+        btnYes.style.fontSize = `${17 * clamped}px`;
+    });
+    
+    // UNLOCK YES at stage 6 (after 6 No clicks)
+    if (clickCount >= 6) {
         yesReady = true;
         btnYes.classList.add('ready');
-    }
-    
-    // Incremental growth before final
-    if (clickCount < 6) {
-        const multiplier = 1 + (clickCount * 0.15);
-        const clamped = Math.min(multiplier, 1.8);
-        requestAnimationFrame(() => {
-            btnYes.style.padding = `${16 * clamped}px ${44 * clamped}px`;
-            btnYes.style.fontSize = `${17 * clamped}px`;
-        });
-    }
-    
-    // Final stage - Yes takes over
-    if (clickCount >= 6) {
         btnNo.classList.add('hide');
         btnYes.classList.add('full');
         btnRow.classList.add('full-width');
@@ -120,9 +106,7 @@ function goToResult() {
     setTimeout(() => {
         page1.style.display = 'none';
         page2.style.display = 'flex';
-        requestAnimationFrame(() => {
-            page2.classList.add('show');
-        });
+        requestAnimationFrame(() => page2.classList.add('show'));
     }, 350);
 }
 
