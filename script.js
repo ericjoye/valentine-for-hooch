@@ -139,6 +139,34 @@ function growYes() {
     }
 }
 
+function createConfetti() {
+    const colors = ['#ff6b9d', '#ffc4d6', '#fff', '#ffb3c9'];
+    const shapes = ['❤️', '💕', '✨', '💖'];
+    
+    for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+            
+            const left = 20 + Math.random() * 60;
+            const duration = 2 + Math.random() * 1.5;
+            const delay = Math.random() * 0.5;
+            const size = 16 + Math.random() * 12;
+            
+            confetti.style.left = left + '%';
+            confetti.style.fontSize = size + 'px';
+            confetti.style.animationDuration = duration + 's';
+            confetti.style.animationDelay = delay + 's';
+            confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
+            
+            page2.appendChild(confetti);
+            
+            setTimeout(() => confetti.remove(), (duration + delay) * 1000);
+        }, i * 50);
+    }
+}
+
 function goToResult() {
     if (!yesReady) {
         showError();
@@ -149,7 +177,10 @@ function goToResult() {
     setTimeout(() => {
         page1.style.display = 'none';
         page2.style.display = 'flex';
-        requestAnimationFrame(() => page2.classList.add('show'));
+        requestAnimationFrame(() => {
+            page2.classList.add('show');
+            createConfetti();
+        });
     }, 350);
 }
 
