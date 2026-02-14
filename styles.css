@@ -11,6 +11,45 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Floating Hearts Background */
+.hearts-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.floating-heart {
+    position: absolute;
+    font-size: 20px;
+    opacity: 0.06;
+    animation: float 15s infinite ease-in-out;
+    color: #ff6b9d;
+}
+
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(100vh) rotate(0deg); 
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.06;
+    }
+    90% {
+        opacity: 0.06;
+    }
+    100% { 
+        transform: translateY(-10vh) rotate(360deg); 
+        opacity: 0;
+    }
 }
 
 .content {
@@ -18,20 +57,22 @@ body {
     padding: 24px;
     width: 100%;
     max-width: 400px;
+    z-index: 10;
+    position: relative;
 }
 
 .title {
     font-size: 28px;
     color: #222;
     font-weight: 600;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     line-height: 1.3;
 }
 
 .subtitle {
     font-size: 17px;
     color: #666;
-    margin-bottom: 40px;
+    margin-bottom: 16px;
     min-height: 24px;
     opacity: 0;
     transform: translateY(10px);
@@ -39,6 +80,23 @@ body {
 }
 
 .subtitle.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Error message when clicking Yes too early */
+.error-message {
+    font-size: 15px;
+    color: #ff6b9d;
+    margin-bottom: 24px;
+    min-height: 20px;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.error-message.show {
     opacity: 1;
     transform: translateY(0);
 }
@@ -69,18 +127,27 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
+/* Yes button - disabled state */
 .btn-yes {
-    background: #ff6b9d;
-    color: white;
+    background: linear-gradient(135deg, #ffc4d6, #ffb3c9);
+    color: rgba(255,255,255,0.9);
     padding: 16px 44px;
     min-width: 120px;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(255, 107, 157, 0.25);
+    position: relative;
+    cursor: not-allowed;
 }
 
-.btn-yes:hover {
+.btn-yes.ready {
+    background: #ff6b9d;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(255, 107, 157, 0.35);
+}
+
+.btn-yes.ready:hover {
     background: #f06292;
-    box-shadow: 0 4px 12px rgba(255, 107, 157, 0.35);
+    box-shadow: 0 4px 16px rgba(255, 107, 157, 0.45);
+    transform: translateY(-2px);
 }
 
 .btn-yes.full {
@@ -92,6 +159,19 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* Lock icon on Yes button */
+.btn-yes::before {
+    content: '🔒';
+    margin-right: 8px;
+    opacity: 0.7;
+    font-size: 14px;
+}
+
+.btn-yes.ready::before {
+    content: '💕';
+    opacity: 1;
 }
 
 .btn-no {
@@ -106,6 +186,8 @@ body {
 
 .btn-no:hover {
     background: rgba(255, 255, 255, 1);
+    border-color: rgba(0,0,0,0.12);
+    transform: translateY(-1px);
 }
 
 .btn-no.hide {
@@ -133,6 +215,7 @@ body {
     padding: 24px;
     opacity: 0;
     transition: opacity 0.5s ease;
+    z-index: 20;
 }
 
 .result.show {
