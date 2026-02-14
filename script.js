@@ -140,30 +140,29 @@ function growYes() {
 }
 
 function createConfetti() {
-    const colors = ['#ff6b9d', '#ffc4d6', '#fff', '#ffb3c9'];
-    const shapes = ['❤️', '💕', '✨', '💖'];
+    const shapes = ['❤️', '💕'];
     
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 18; i++) {
         setTimeout(() => {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';
             confetti.textContent = shapes[Math.floor(Math.random() * shapes.length)];
             
-            const left = 20 + Math.random() * 60;
-            const duration = 2 + Math.random() * 1.5;
-            const delay = Math.random() * 0.5;
-            const size = 16 + Math.random() * 12;
+            const left = 25 + Math.random() * 50;
+            const duration = 1.5 + Math.random() * 1.5;
+            const delay = Math.random() * 0.3;
+            const size = 12 + Math.random() * 10;
             
             confetti.style.left = left + '%';
             confetti.style.fontSize = size + 'px';
             confetti.style.animationDuration = duration + 's';
             confetti.style.animationDelay = delay + 's';
-            confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.color = '#ff6b9d';
             
             page2.appendChild(confetti);
             
             setTimeout(() => confetti.remove(), (duration + delay) * 1000);
-        }, i * 50);
+        }, i * 60);
     }
 }
 
